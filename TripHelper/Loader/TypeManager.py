@@ -6,6 +6,7 @@ and if possible return the object
 """
 from TripHelper.Places.Cities import City
 from TripHelper.Places.NationalParks import NationalPark
+from TripHelper.Places.RoadSegment import RoadSegment
 
 
 class TypeManager:
@@ -18,12 +19,16 @@ class TypeManager:
             return "City"
         elif isinstance(obj, NationalPark):
             return "NP"
+        elif isinstance(obj, RoadSegment):
+            return "Road"
         return "NoType"
 
     def string_to_type(self, string: 'str') -> 'object':
         if string == "City":
             return City
-        if string == "NP":
+        elif string == "NP":
             return NationalPark
+        elif string == "Road":
+            return RoadSegment
         pass
 

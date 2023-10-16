@@ -13,16 +13,15 @@ class OSRMScrapper:
         print("OSRM Scrapper initialised")
         return
 
+    def get_direction_between_two_points(self, latlong1, latlong2):
+        url = f"http://router.project-osrm.org/route/v1/driving/{latlong1[1]},{latlong1[0]};{latlong2[1]},{latlong2[0]}"
+        #url = "http://router.project-osrm.org/route/v1/driving/13.388860,52.517037;13.397634,52.529407;13.428555,52.523219"
+        print(self.execute_call(url))
+        return
+
     def execute_call(self, url):
         req = urllib.request.Request(url)
         response_raw = urllib.request.urlopen(req)
         response = response_raw.read()
         data = json.loads(response.decode('utf-8'))
         return data
-
-    def get_waypoint_by_hint(self, hint: 'str'):
-        """
-        E.g. you can use the hint value obtained by the nearest query as hint values for route inputs.
-        """
-        url = "http://router.project-osrm.org/nearest/v1/driving/13.388860,52.517037?number=3"
-        return

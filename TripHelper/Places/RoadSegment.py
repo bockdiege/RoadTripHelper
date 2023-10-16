@@ -13,7 +13,7 @@ Following information should be decoded in the extra string:
 from TripHelper.Interfaces.Place import PlaceInterface
 
 
-class NationalPark(PlaceInterface):
+class RoadSegment(PlaceInterface):
 
     def __init__(self, name, pos, extra):
         self.pos = pos
