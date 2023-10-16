@@ -1,0 +1,7 @@
+San Diego;32.7157,-117.1611;City;Los Angeles,2;MaybeBeautiful
+San Francisco;37.7749,-122.4194;City;;Beautiful
+Sacramento;38.5816,-121.4944;City;San Francisco,2;Ugly,Shitty
+Tahoe City;39.0968,-120.0324;City;Sacramento,3;Beautiful
+Napa;38.2975,-122.2869;City;Tahoe City,4|San Francisco,3;Far
+Los Angeles;34.0549,-118.2426;City;San Francisco,6;Ugly
+Fresno;35.5555,-118.8888;City;Los Angeles,3|Sacramento,2;Fly Over City
