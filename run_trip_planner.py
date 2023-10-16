@@ -38,7 +38,7 @@ trip.dump_graph(path_new)
 #start = "San Francisco"
 #destination = "San Diego"
 
-#scrapper = Scrapper("Trips/TripHelper/Scrapers/keys.txt")
+#scrapper = Scrapper("Trips/TripHelper/Scrapers/keys_sample.txt")
 
 #test_graph = data_loader.load_file(path_existing)
 #print(test_graph.search(test_graph.get_point_by_name(start), test_graph.get_point_by_name(destination)))

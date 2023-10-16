@@ -17,7 +17,7 @@ class Trip:
     def __init__(self, path):
         self.path = path    # Technically unnecessary
         self.loader = GraphLoader()
-        self.scrapper = Scrapper("TripHelper/Scrapers/keys.txt")
+        self.scrapper = Scrapper("TripHelper/Scrapers/keys_sample.txt")
         self.graph = self.load_graph(self.path)
 
     def get_nationalparks_by_state_code(self, state_code: 'str'):
