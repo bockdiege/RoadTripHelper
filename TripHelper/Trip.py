@@ -14,7 +14,7 @@ from TripHelper.Scrapers.Scrapper import Scrapper
 
 class Trip:
 
-    def __init__(self, path, keys):
+    def __init__(self, path: 'str', keys: 'str'):
         self.path = path    # Technically unnecessary
         self.loader = GraphLoader()
         self.scrapper = Scrapper(keys)
