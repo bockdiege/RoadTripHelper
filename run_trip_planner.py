@@ -3,25 +3,12 @@ from TripHelper.Places.NationalParks import NationalPark
 from TripHelper.Places.RoadSegment import RoadSegment
 from TripHelper.Trip import Trip
 
+import matplotlib.pyplot as plt
+road_testing_path = "TripHelper/data/road_testing.txt"
+key_path = "TripHelper/Scrapers/keys.txt"
 
-path_existing = "TripHelper/data/test_data.txt"
-path_new = "TripHelper/data/test_data_new.txt"
+trip = Trip(road_testing_path, key_path)
 
-trip = Trip(path_existing, "TripHelper/Scrapers/keys.txt")
+print(trip.search_path_between_two_points("San Francisco", "Tahoe City"))
 
-start = "Tahoe City"
-destination = "San Diego"
-
-print(trip.search_path_between_two_points(start, destination))
-
-trip.get_nationalparks_by_state_code("ut")
-
-sf = "San Francisco"
-sacra = "Sacramento"
-
-pos_sf = trip.get_graph().get_point_by_name(sf).get_data().get_pos()
-pos_scara = trip.get_graph().get_point_by_name(sacra).get_data().get_pos()
-
-trip.scrapper.osrm.get_direction_between_two_points(pos_sf, pos_scara)
-
-trip.dump_graph(path_new)
+#trip.dump_graph(path_new)

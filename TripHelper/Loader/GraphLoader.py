@@ -53,6 +53,10 @@ class GraphLoader:
         return new_point
 
     def __generate_vertexes_from_str(self, point_str: 'str', graph: 'Graph'):
+        """
+        Takes a point string and a graph. Figures out what the neighbours of the point are and then
+        actually creates such connections in the Graph
+        """
         arr = point_str.split(';')
         start_point = graph.get_point_by_name(name=arr[0])
 
