@@ -93,7 +93,6 @@ class GraphLoader:
             San Diego;32.7157,117.1611;City;Los Angeles,2;Ugly,Shitty
             """
             data = graph.get_points()[point_index].get_data()
-            print(data)
             name = data.get_name()
             lat = str(data.get_pos()[0])
             long = str(data.get_pos()[1])

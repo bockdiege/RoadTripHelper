@@ -7,7 +7,7 @@ from TripHelper.Trip import Trip
 path_existing = "TripHelper/data/test_data.txt"
 path_new = "TripHelper/data/test_data_new.txt"
 
-trip = Trip(path_existing)
+trip = Trip(path_existing, "TripHelper/Scrapers/keys.txt")
 
 start = "Tahoe City"
 destination = "San Diego"
@@ -22,5 +22,6 @@ sacra = "Sacramento"
 pos_sf = trip.get_graph().get_point_by_name(sf).get_data().get_pos()
 pos_scara = trip.get_graph().get_point_by_name(sacra).get_data().get_pos()
 
+trip.scrapper.osrm.get_direction_between_two_points(pos_sf, pos_scara)
 
 trip.dump_graph(path_new)

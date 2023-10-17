@@ -14,10 +14,10 @@ from TripHelper.Scrapers.Scrapper import Scrapper
 
 class Trip:
 
-    def __init__(self, path):
+    def __init__(self, path, keys):
         self.path = path    # Technically unnecessary
         self.loader = GraphLoader()
-        self.scrapper = Scrapper("TripHelper/Scrapers/keys.txt")
+        self.scrapper = Scrapper(keys)
         self.graph = self.load_graph(self.path)
 
     def get_nationalparks_by_state_code(self, state_code: 'str'):
