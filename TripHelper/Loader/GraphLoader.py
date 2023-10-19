@@ -44,11 +44,8 @@ class GraphLoader:
         """
         arr = point_str.split(';')
         place_type = arr[2]
-        name = arr[0]
-        pos = (float(arr[1].split(',')[0]), float(arr[1].split(',')[1]))
-        extra = arr[-1]
 
-        new_place = self.typeManager.string_to_type(place_type)(name, pos, extra)
+        new_place =  self.typeManager.string_to_type(place_type)(point_str)
         new_point = Point(new_place)
         return new_point
 
@@ -82,7 +79,6 @@ class GraphLoader:
         new_point = self.__generate_point_from_str(point_str)
         graph.add_single_point(new_point)
         self.__generate_vertexes_from_str(point_str, graph)
-
         return graph
 
     def dump_graph(self, graph, path):
@@ -91,23 +87,9 @@ class GraphLoader:
         """
         graph_arr = [[]] * (len(graph.get_points()))
 
-        # This creates the points, but does not specify the neighbours
-        for point_index in range(0, len(graph.get_points())):
-            """Remember, String Format Sample:
-            San Diego;32.7157,117.1611;City;Los Angeles,2;Ugly,Shitty
-            """
-            data = graph.get_points()[point_index].get_data()
-            name = data.get_name()
-            lat = str(data.get_pos()[0])
-            long = str(data.get_pos()[1])
-            latlong = ",".join([lat,long])
-            extra = data.get_extra()
-            #type_str = self.type_to_string(data)
-            type_str = self.typeManager.type_to_string(data)
-
-            # Build string, but without neighbours
-            #point_string = name + ";" + lat+ "," + long + ";" + type_str + ";" + ";"
-            point_string = ";".join([name, latlong, type_str, "", extra])
+        for point_index, point in enumerate(graph.get_points()):
+            data = point.get_data()
+            point_string = data.get_point_without_neighbours_as_string()
             graph_arr[point_index] = point_string
 
         # Specify the neighbours:

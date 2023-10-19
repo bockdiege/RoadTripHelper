@@ -5,10 +5,12 @@ from TripHelper.Trip import Trip
 
 import matplotlib.pyplot as plt
 road_testing_path = "TripHelper/data/road_testing.txt"
+path_new = "TripHelper/data/test_data_new.txt"
 key_path = "TripHelper/Scrapers/keys.txt"
 
 trip = Trip(road_testing_path, key_path)
 
-print(trip.search_path_between_two_points("San Francisco", "Tahoe City"))
+trip.get_nationalparks_by_state_code("ut")
 
-#trip.dump_graph(path_new)
+
+trip.dump_graph(path_new)

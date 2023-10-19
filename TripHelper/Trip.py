@@ -36,6 +36,26 @@ class Trip:
     def search_path_between_two_points(self, start: 'str', end: 'str'):
         return self.graph.search(self.graph.get_point_by_name(start), self.graph.get_point_by_name(end))
 
+    def build_road_network_of_points(self):
+        """
+        Builds the necessary road network for the graph.
+        Generally not satisfied with the location of this algorithm, but it needs a graph and scrappers,
+        which this class has.
+        How does this algorithm work:
+            First step:
+                Get an array of all the waypoints from one point to another
+        """
+
+        # Make a list of requests that have to be made
+        # Think of matrix with width and length of the number of points. Each row is a start point, each column an
+        # endpoint, thus the requests have to be the upper (or lower) triangle of the matrix. This code does that
+        requests= []
+        for i in range(0, len(self.graph.get_points())):
+            for j in range(i+1, len(self.graph.get_points())):
+                requests.append((self.graph.get_points()[i].get_data().get_pos(), self.graph.get_points()[j].get_data().get_pos()))
+        print(requests)
+        pass
+
     def get_path(self):
         return self.path
 
@@ -47,6 +67,9 @@ class Trip:
         return self.graph
 
     def load_graph(self, path):
+        """
+        Loads and then returns a graph from a given path.
+        """
         if path != self.path:
             self.set_path(path)
         return self.loader.load_file(path)
@@ -57,3 +80,9 @@ class Trip:
         returns the path
         """
         return self.loader.dump_graph(self.graph, path)
+
+
+"""
+Documentation 
+http://project-osrm.org/docs/v5.24.0/api/#
+"""
