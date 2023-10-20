@@ -11,16 +11,25 @@ class Graph:
         pass
 
     def add_single_point(self, point):
+        positions = [position.get_pos() for position in self.get_points_data()]
+        if point.get_data().get_pos() in positions:
+            #print("Attempted to add point whose position was already in the graph.")
+            return
         self.points.append(point)
         return point
 
 
     def add_point(self, point_added, point_origin, cost):
         """Preferred method of adding points"""
+        positions = [position.get_pos() for position in self.get_points_data()]
+        if point_added.get_data().get_pos() in positions:
+            #print("Attempted to add point whose position was already in the graph.")
+            return
         if point_added == point_origin:  # This is to prevent shot circuits
             if point_added not in self.points:
                 self.points.append(point_added)
             return
+
         self.add_single_point(point_added)      # add the point
         self.add_connection(point_added, point_origin, cost)
         return
