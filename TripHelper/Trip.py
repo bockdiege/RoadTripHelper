@@ -47,42 +47,50 @@ class Trip:
                 Get an array of requests that have to be made by the OSRM scrapper.
                 req(n) = (n^2 - n)/2, with req(n) being the number of requests, and n the number of points in the graph.
                 In the future this number of requests should be pruned further.
+            2:
+                Execute the requests and get the points that map out the road.
+            3:
+                Create a graph of these roads
+                The graph will automatically filter out redundancies in points
         """
-
-        # Make a list of requests that have to be made
-        # Think of matrix with width and length of the number of points. Each row is a start point, each column an
-        # endpoint, thus the requests have to be the upper (or lower) triangle of the matrix. This code does that
-        requests =  []
-        for i in range(0, len(self.graph.get_points())):
-            for j in range(i+1, len(self.graph.get_points())):
-                requests.append((self.graph.get_points()[i].get_data().get_pos(), self.graph.get_points()[j].get_data().get_pos()))
-
-        print("requests:", len(requests))
-        print("predicted amount of requests: ", (len(self.graph.get_points())**2 - len(self.graph.get_points()))/2)
-
-        road_positions = []
-        for request in requests:
-            pos0 = request[0]
-            pos1 = request[1]
-            road_path = self.scrapper.osrm.get_direction_between_two_points(pos0, pos1)
-            road_positions.append(road_path)
-        # This algorithm will need a graph merge function, but that should not be a problem to implement
-        road_positions = [position for road_path in road_positions for position in road_path]   # Flatten the road network
-
-        num_roads_old = len(road_positions)
-
-        road_network = []
-        for index, position in enumerate(road_positions):
-            segment = RoadSegment(f"{index};{position}")
-            road_network.append(Point(segment))
-
+        roads = self.scrapper.osrm.get_roads_from_points(self.graph.get_points())
         road_graph = Graph([], [])
-        road_graph.add_single_point(road_network[0])
-        for index, road_segment in enumerate(road_network[1:-1]):
-            road_graph.add_point(road_network[index + 1], road_segment, 0)
-        num_roads_new = len(road_graph.get_points())
-        print(f"{num_roads_old - num_roads_new} redundancies found in road network.")
-        return road_graph.get_points_data()
+
+        for road in roads:
+            self.add_road(road, road_graph)
+        return road_graph
+
+    def add_road(self, road_point_arr, graph: 'Graph'):
+        # Add the first point of the road manually. It is still important to check if the points already exists.
+        positions = [data.get_pos() for data in graph.get_points_data()]
+
+        if road_point_arr[0].get_data().get_pos() in positions:
+            index = positions.index(road_point_arr[0].get_data().get_pos())
+            road_point_arr[0] = graph.get_points()[index]
+        else:
+            graph.add_single_point(road_point_arr[0])
+
+        # Now add the road to the graph.
+        for index, point in enumerate(road_point_arr[:-1]):
+            positions = [data.get_pos() for data in graph.get_points_data()]
+
+            point_to_be_added = road_point_arr[index + 1]
+            # Point position might already be in the graph. In this case the point that is already there should be used.
+            if point.get_data().get_pos() in positions:
+                index_point_actual = positions.index(point.get_data().get_pos())
+                point = graph.get_points()[index_point_actual]
+
+            if point_to_be_added.get_data().get_pos() not in positions:
+                graph.add_point(point_to_be_added, point, 0)
+            else:
+                # Point position is in the Graph. Get the point that already is in the graph with the same position.
+                index_actual = positions.index(point_to_be_added.get_data().get_pos())
+                point_to_be_added_actual = graph.get_points()[index_actual]
+
+                neighbours = [vertex.get_end_point() for vertex in point.get_neighbours()]
+                if point_to_be_added_actual not in neighbours:
+                    graph.add_connection(point_to_be_added_actual, point, 0)
+        return graph
 
     def get_path(self):
         return self.path

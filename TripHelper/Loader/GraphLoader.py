@@ -115,3 +115,21 @@ class GraphLoader:
         with open(path, 'w') as file:
             file.write("\n".join(graph_arr))
         return path
+
+    def load_two_graphs(self, graph1: 'Graph', graph2: 'Graph'):
+        """This function will take a graph and join it up with self.graph.
+        This is done by renaming all the points that share a connection, in one graph
+        then dumping the two graphs next to each other and then loading them back in."""
+        # find all the matches:
+        positions_1 = [data.get_pos() for data in graph1.get_points_data()]
+        positions_2 = [data.get_pos() for data in graph2.get_points_data()]
+
+
+        matches = []
+        for pos1 in positions_1:
+            for pos2 in positions_2:
+                if pos1 == pos2:
+                    matches.append(pos1)
+
+        print(matches)
+        pass

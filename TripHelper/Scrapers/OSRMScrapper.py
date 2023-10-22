@@ -4,6 +4,8 @@ This Scrapper gets data from the OSRM api
 import urllib.request, json
 import polyline
 
+from TripHelper.Graph.Node import Point
+from TripHelper.Places.RoadSegment import RoadSegment
 from TripHelper.Scrapers.ScrapperState import ScrapperState
 
 
@@ -32,6 +34,30 @@ class OSRMScrapper:
         name = waypoint["name"]
         return name
 
+    def get_roads_from_points(self, points):
+
+        # Make a list of requests that have to be made
+        # Think of matrix with width and length of the number of points. Each row is a start point, each column an
+        # endpoint, thus the requests have to be the upper (or lower) triangle of the matrix. This code does that
+        requests = []
+        for i in range(0, len(points)):
+            for j in range(i+1, len(points)):
+                requests.append((points[i].get_data().get_pos(), points[j].get_data().get_pos()))
+
+        print("requests:", len(requests))
+        print("predicted amount of requests: ", (len(points)**2 - len(points))/2)
+        # Execute the requests
+        roads = []
+        for i, request in enumerate(requests):
+            pos0 = request[0]
+            pos1 = request[1]
+            road_path = self.get_direction_between_two_points(pos0, pos1)
+            arr = []
+            for j, position in enumerate(road_path):
+                road_segment = RoadSegment(f"{i}-{j};{position};Road;;")
+                arr.append(Point(road_segment))
+            roads.append(arr)
+        return roads
 
     def __execute_call(self, url):
         print(f"Requested Data from following URL: {url}")
