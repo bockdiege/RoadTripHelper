@@ -32,7 +32,9 @@ class OSRMScrapper:
         data_raw = self.__execute_call(url)
         waypoint = data_raw["waypoints"][0]
         name = waypoint["name"]
-        return name
+        position = waypoint["location"]
+        #print(position)
+        return position
 
     def get_roads_from_points(self, points):
 

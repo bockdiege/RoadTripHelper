@@ -42,23 +42,22 @@ class Trip:
     def build_road_network_of_points(self):
         """
         Builds the necessary road network for the graph.
-        How does this algorithm work:
-            First step:
-                Get an array of requests that have to be made by the OSRM scrapper.
-                req(n) = (n^2 - n)/2, with req(n) being the number of requests, and n the number of points in the graph.
-                In the future this number of requests should be pruned further.
-            2:
-                Execute the requests and get the points that map out the road.
-            3:
-                Create a graph of these roads
-                The graph will automatically filter out redundancies in points
         """
+
+
         roads = self.scrapper.osrm.get_roads_from_points(self.graph.get_points())
-        road_graph = Graph([], [])
+
+        n = len(self.graph.get_points())
+        indexes = [int(n*i - i*(i+1)/2) for i, p in enumerate(self.graph.get_points())]
+
+        for index, point in enumerate(self.graph.get_points()[:-1]):
+            road = roads[indexes[index]]
+            self.graph.add_point(road[0], point, 0)
+        self.graph.add_point(roads[-1][-1], self.graph.get_points()[-1], 0)
 
         for road in roads:
-            self.add_road(road, road_graph)
-        return road_graph
+            self.add_road(road, self.graph)
+        return self.graph
 
     def add_road(self, road_point_arr, graph: 'Graph'):
         # Add the first point of the road manually. It is still important to check if the points already exists.

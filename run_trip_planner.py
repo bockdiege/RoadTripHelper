@@ -9,11 +9,14 @@ test_data_path = "TripHelper/data/test_data.txt"
 path_new = "TripHelper/data/test_data_new.txt"
 key_path = "TripHelper/Scrapers/keys.txt"
 
-trip1 = Trip(road_testing_path, key_path)
-trip2 = Trip(test_data_path, key_path)
+trip = Trip(road_testing_path, key_path)
 
-trip1.loader.load_two_graphs(trip1.graph, trip2.graph)
+
+#trip1.loader.load_two_graphs(trip1.graph, trip2.graph)
 #trip.build_road_network_of_points()
+#trip.dump_graph(path_new)
+
+print(trip.search_path_between_two_points("San Francisco", "Sacramento"))
 #trip.get_nationalparks_by_state_code("ca")
 #trip.get_nationalparks_by_state_code("ut")
 #road_graph = trip.build_road_network_of_points()

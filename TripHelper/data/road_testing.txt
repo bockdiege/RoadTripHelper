@@ -1,4 +1,4 @@
-San Francisco;37.7749,-122.4194;City;;Beautiful
-Sacramento;38.5816,-121.4944;City;San Francisco,2;Ugly,Shitty
-Tahoe City;39.0968,-120.0324;City;Sacramento,3;Beautiful
-Napa;38.2975,-122.2869;City;Tahoe City,4|San Francisco,3;Far
+San Francisco;37.77490,-122.41940;City;;Beautiful
+Sacramento;38.58160,-121.49440;City;;Ugly,Shitty
+Tahoe City;39.09680,-120.03240;City;;Beautiful
+Napa;38.29750,-122.28690;City;;Far

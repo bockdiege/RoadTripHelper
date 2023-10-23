@@ -117,19 +117,23 @@ class GraphLoader:
         return path
 
     def load_two_graphs(self, graph1: 'Graph', graph2: 'Graph'):
-        """This function will take a graph and join it up with self.graph.
-        This is done by renaming all the points that share a connection, in one graph
-        then dumping the two graphs next to each other and then loading them back in."""
+        """This function will take two graphs and will join them up
+        general concept:
+            graph1 is the one that will slowly glob up graph 2.
+            How?
+                -
+        """
+        #graph1.points = graph1.points + graph2.points
+        #print(graph1.get_points()[-1].get_neighbours())
+        #print(graph2.get_points()[-1].get_neighbours())
+        point_strings = [data.get_point_without_neighbours_as_string() for data in graph2.get_points_data()]
+        print("pointstrings", point_strings)
         # find all the matches:
-        positions_1 = [data.get_pos() for data in graph1.get_points_data()]
-        positions_2 = [data.get_pos() for data in graph2.get_points_data()]
-
-
-        matches = []
-        for pos1 in positions_1:
-            for pos2 in positions_2:
-                if pos1 == pos2:
-                    matches.append(pos1)
-
-        print(matches)
+        #matches = {}
+        #for point1 in graph1.get_points():
+        #    for point2 in graph2.get_points():
+        #        if point1.get_data().get_pos() == point2.get_data().get_pos():
+        #            print("Neighbours 1:", [vertex.get_end_point() for vertex in point1.get_neighbours()])
+        #            print("Neighbours 2:", [vertex.get_end_point() for vertex in point2.get_neighbours()])
+        #print(matches)
         pass
