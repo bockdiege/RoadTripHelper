@@ -5,7 +5,7 @@ from TripHelper.Graph.Node import Point
 class Graph:
     points = []
 
-    def __init__(self, points, vertexes):
+    def __init__(self, points: list[Point], vertexes: list[Vertex]):
         self.points = points
         self.vertexes = vertexes
         pass
@@ -23,10 +23,31 @@ class Graph:
         """Preferred method of adding points"""
         if point_added == point_origin:  # This is to prevent shot circuits
             if point_added not in self.points:
-                self.points.append(point_added)
+                self.add_single_point(point_added)      # add the point
             return
         self.add_single_point(point_added)      # add the point
         self.add_connection(point_added, point_origin, cost)
+        return
+
+    def delete_point(self, point: 'Point'):
+        neighbours = [vertex.get_end_point() for vertex in point.get_neighbours()]
+        vertexes_to_be_deleted = point.get_neighbours()
+        for neighbour in neighbours:
+            for vertex in neighbour.get_neighbours():
+                if vertex.get_end_point() == point:
+                    # delete the vertex of the neighbouring point:
+                    #print("Neighbours before being deleted", neighbour.get_neighbours())
+                    neighbour.neighbours.remove(vertex)
+                    #print("Neighbour after being deleted", neighbour.get_neighbours())
+                    vertexes_to_be_deleted.append(vertex)
+            pass
+        #print("vertexes before being removed", self.vertexes)
+        for vertex in vertexes_to_be_deleted:
+            self.vertexes.remove(vertex)
+            pass
+        #print("verteces after being removed", self.vertexes)
+        self.get_points().remove(point)
+
         return
 
     def add_connection(self, point1: 'Point', point2: 'Point', cost):
@@ -51,15 +72,15 @@ class Graph:
             names.append(i.get_data().get_name())
         return names
 
-    def get_point_by_name(self, name):
+    def get_point_by_name(self, name) -> 'Point':
         """Returns the Point that has the input name"""
         index = self.get_points_name().index(name)
         return self.points[index]
 
-    def get_points(self):
+    def get_points(self) -> list[Point]:
         return self.points
 
-    def get_vertexes(self):
+    def get_vertexes(self) -> list[Vertex]:
         return self.vertexes
 
     def get_single_vertexes(self):
@@ -70,7 +91,7 @@ class Graph:
         return vertex
 
     def search(self, start: 'Point', end: 'Point'):
-        def recursive_search(start: 'Point', end: 'Point', tree,path):
+        def recursive_search(start: 'Point', end: 'Point', tree, path):
             path.insert(0,end)
             if start == end:
                 return path
@@ -78,6 +99,7 @@ class Graph:
             return recursive_search(start, new_end, tree, path)
 
         tree, cost_arr = self.dijkstra_search(start)
+        print("Distance Tree", tree)
         # Get Trip
 
         test = recursive_search(start, end, tree, [])

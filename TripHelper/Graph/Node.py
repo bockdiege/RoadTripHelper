@@ -19,6 +19,12 @@ class Point:
         """ Returns the array, where the Vertexes are, that connect the points, are stored"""
         return self.neighbours
 
+    def set_neighbours(self, neighbours):
+        """
+        Only use this if you know what you are doing!
+        """
+        self.neighbours = neighbours
+
     # def __str__(self): PLS IMPLEMENT THIS
     #    return f"Point with position at {self.data.get_}"
 

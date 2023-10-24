@@ -43,10 +43,11 @@ class Trip:
         """
         Builds the necessary road network for the graph.
         """
-
-
+        # TODO: if a graph already has points, these should now be included!
+        # TODO: for that a method that returns only points of a certain type.
         roads = self.scrapper.osrm.get_roads_from_points(self.graph.get_points())
 
+        # This connects the actual points to the Road Points
         n = len(self.graph.get_points())
         indexes = [int(n*i - i*(i+1)/2) for i, p in enumerate(self.graph.get_points())]
 
@@ -56,40 +57,9 @@ class Trip:
         self.graph.add_point(roads[-1][-1], self.graph.get_points()[-1], 0)
 
         for road in roads:
-            self.add_road(road, self.graph)
+            self.loader.add_road(road, self.graph)
+        self.loader.compress_roads(self.graph)
         return self.graph
-
-    def add_road(self, road_point_arr, graph: 'Graph'):
-        # Add the first point of the road manually. It is still important to check if the points already exists.
-        positions = [data.get_pos() for data in graph.get_points_data()]
-
-        if road_point_arr[0].get_data().get_pos() in positions:
-            index = positions.index(road_point_arr[0].get_data().get_pos())
-            road_point_arr[0] = graph.get_points()[index]
-        else:
-            graph.add_single_point(road_point_arr[0])
-
-        # Now add the road to the graph.
-        for index, point in enumerate(road_point_arr[:-1]):
-            positions = [data.get_pos() for data in graph.get_points_data()]
-
-            point_to_be_added = road_point_arr[index + 1]
-            # Point position might already be in the graph. In this case the point that is already there should be used.
-            if point.get_data().get_pos() in positions:
-                index_point_actual = positions.index(point.get_data().get_pos())
-                point = graph.get_points()[index_point_actual]
-
-            if point_to_be_added.get_data().get_pos() not in positions:
-                graph.add_point(point_to_be_added, point, 0)
-            else:
-                # Point position is in the Graph. Get the point that already is in the graph with the same position.
-                index_actual = positions.index(point_to_be_added.get_data().get_pos())
-                point_to_be_added_actual = graph.get_points()[index_actual]
-
-                neighbours = [vertex.get_end_point() for vertex in point.get_neighbours()]
-                if point_to_be_added_actual not in neighbours:
-                    graph.add_connection(point_to_be_added_actual, point, 0)
-        return graph
 
     def get_path(self):
         return self.path

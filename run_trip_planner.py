@@ -9,14 +9,28 @@ test_data_path = "TripHelper/data/test_data.txt"
 path_new = "TripHelper/data/test_data_new.txt"
 key_path = "TripHelper/Scrapers/keys.txt"
 
-trip = Trip(road_testing_path, key_path)
+trip = Trip(path_new, key_path)
+
+#trip.graph.delete_point(trip.graph.get_point_by_name("San Diego"))
+#print(trip.graph.get_point_by_name("Napa").get_neighbours())
+#print(trip.graph.get_single_vertexes())
+#trip.dump_graph("delete_testing.txt")
+trip.loader.compress_roads(trip.graph)
+trip.dump_graph("compressed?")
 
 
 #trip1.loader.load_two_graphs(trip1.graph, trip2.graph)
 #trip.build_road_network_of_points()
+#trip.loader.compress_roads(trip.graph)
+
+#print(trip.search_path_between_two_points("San Francisco", "Sacramento"))
 #trip.dump_graph(path_new)
 
-print(trip.search_path_between_two_points("San Francisco", "Sacramento"))
+
+#trip.scrapper.nps.get_park_by_code("yose")
+
+#trip = Trip(path_new, key_path)
+#print(trip.search_path_between_two_points("San Francisco", "Sacramento"))
 #trip.get_nationalparks_by_state_code("ca")
 #trip.get_nationalparks_by_state_code("ut")
 #road_graph = trip.build_road_network_of_points()

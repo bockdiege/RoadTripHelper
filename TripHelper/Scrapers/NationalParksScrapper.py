@@ -30,6 +30,7 @@ class NationalParkScrapper:
     def get_park_by_code(self, code):
         endpoint = "?".join([self.base_endcode, f"parkCode={code}"])
         data = self.__make_call(endpoint)
+        print(data["data"])
         data_str = self.__create_string_from_nps_data(data["data"])[0]
         return data_str
 
@@ -58,6 +59,7 @@ class NationalParkScrapper:
             description = data_point["description"]
             park_code = data_point["parkCode"]
             entrance_fees = data_point["entranceFees"]
+            #TODO: Implement opening hours, as well as prices!
             #print("private vehicle: ", entrance_fees[0])
             #print("cost on foot", entrance_fees[2])
             #cost_private_vehicle = entrance_fees[0]["cost"]

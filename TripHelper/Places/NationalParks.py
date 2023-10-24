@@ -36,4 +36,7 @@ class NationalPark(PlaceInterface):
         return self.extra
 
     def get_point_without_neighbours_as_string(self):
+        new_point_str = self.point_without_neighbours_as_string.split(';')
+        new_point_str[3] = ""
+        self.point_without_neighbours_as_string = ";".join(new_point_str)
         return self.point_without_neighbours_as_string

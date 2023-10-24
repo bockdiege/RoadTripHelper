@@ -32,3 +32,7 @@ class TypeManager:
             return RoadSegment
         pass
 
+    def obj_is_of_type(self, obj: 'object', type: 'str') -> 'bool':
+        return type == self.type_to_string(obj)
+
+

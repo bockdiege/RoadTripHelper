@@ -18,9 +18,6 @@ class Scrapper:
                 name = key_info.split(",")[0]
                 key = key_info.split(",")[1]
 
-                # I know that this is really slow, complexity of O(n2) but
-                # I doubt that enough scrappers will be employed for this to be bad for performance
-
                 if name == "USGOV":
                     # Initialise every scrapper that uses USGOV api
                     self.nps = NationalParkScrapper(key)
