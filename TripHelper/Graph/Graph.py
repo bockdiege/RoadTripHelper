@@ -18,15 +18,14 @@ class Graph:
         self.points.append(point)
         return point
 
-
-    def add_point(self, point_added, point_origin, cost):
+    def add_point(self, point_added, point_origin, cost, extra: 'str'):
         """Preferred method of adding points"""
         if point_added == point_origin:  # This is to prevent shot circuits
             if point_added not in self.points:
                 self.add_single_point(point_added)      # add the point
             return
         self.add_single_point(point_added)      # add the point
-        self.add_connection(point_added, point_origin, cost)
+        self.add_connection(point_added, point_origin, cost, extra)
         return
 
     def delete_point(self, point: 'Point'):
@@ -36,26 +35,22 @@ class Graph:
             for vertex in neighbour.get_neighbours():
                 if vertex.get_end_point() == point:
                     # delete the vertex of the neighbouring point:
-                    #print("Neighbours before being deleted", neighbour.get_neighbours())
                     neighbour.neighbours.remove(vertex)
-                    #print("Neighbour after being deleted", neighbour.get_neighbours())
                     vertexes_to_be_deleted.append(vertex)
             pass
-        #print("vertexes before being removed", self.vertexes)
         for vertex in vertexes_to_be_deleted:
             self.vertexes.remove(vertex)
             pass
-        #print("verteces after being removed", self.vertexes)
         self.get_points().remove(point)
 
         return
 
-    def add_connection(self, point1: 'Point', point2: 'Point', cost):
-        vertex1 = Vertex(point1, point2, cost)
+    def add_connection(self, point1: 'Point', point2: 'Point', cost, extra: 'str'):
+        vertex1 = Vertex(point1, point2, cost, extra)
         point1.add_neighbour(vertex1)
         self.add_vertex(vertex1)
 
-        vertex2 = Vertex(point2, point1, cost)
+        vertex2 = Vertex(point2, point1, cost, extra)
         point2.add_neighbour(vertex2)
         self.add_vertex(vertex2)
         return
@@ -99,7 +94,6 @@ class Graph:
             return recursive_search(start, new_end, tree, path)
 
         tree, cost_arr = self.dijkstra_search(start)
-        print("Distance Tree", tree)
         # Get Trip
 
         test = recursive_search(start, end, tree, [])

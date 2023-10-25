@@ -18,7 +18,6 @@ class OSRMScrapper:
 
     def get_direction_between_two_points(self, pos1, pos2):
         url = f"http://router.project-osrm.org/route/v1/driving/{pos1[1]},{pos1[0]};{pos2[1]},{pos2[0]}"
-        #url = "http://router.project-osrm.org/route/v1/driving/13.388860,52.517037;13.397634,52.529407;13.428555,52.523219"
         data_raw = self.__execute_call(url)
         #print(data_raw)
         data = data_raw["routes"][0]
@@ -26,6 +25,14 @@ class OSRMScrapper:
         geometry_decoded = polyline.decode(geometry_encoded)
         geometry_decoded = [f"{point[0]},{point[1]}" for point in geometry_decoded]
         return geometry_decoded
+
+    def get_dir_and_cost_between_two_points(self, pos1, pos2) -> tuple[str, float]:
+        url = f"http://router.project-osrm.org/route/v1/driving/{pos1[1]},{pos1[0]};{pos2[1]},{pos2[0]}"
+        data_raw = self.__execute_call(url)
+        data = data_raw["routes"][0]
+        geometry_encoded = data["geometry"]
+        duration = float(data["duration"])
+        return geometry_encoded, duration
 
     def get_nearest_street(self, pos1):
         url = f"http://router.project-osrm.org/nearest/v1/driving/{pos1[1]},{pos1[0]}?number=1"

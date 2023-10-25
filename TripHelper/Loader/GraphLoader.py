@@ -41,7 +41,7 @@ class GraphLoader:
         Name; long lat; Type; (Neighbour_i, cost_i); (Tags); Description
         Description is the extra data that each type
         Sample string:
-        San Diego;32.7157,117.1611;City;Los Angeles,2|;Ugly,Shitty
+        San Diego;32.7157,117.1611;City;Los Angeles,2/;Ugly,Shitty
         """
         arr = point_str.split(';')
         place_type = arr[2]
@@ -61,11 +61,13 @@ class GraphLoader:
         if arr[3] == "":
             return
 
-        for i in arr[3].split('|'):
+        for i in arr[3].split('/'):
             name = i.split(',')[0]
             cost = float(i.split(',')[1])
+            extra = i.split(',')[2]
+
             neighbour = graph.get_point_by_name(name)
-            graph.add_connection(neighbour, start_point, cost)
+            graph.add_connection(neighbour, start_point, cost, extra)
         return
 
     def compress_roads(self, graph):
@@ -81,9 +83,8 @@ class GraphLoader:
             if len(neighbours) == 2:
                 if isinstance(neighbours[0].get_data(), RoadSegment):
                     if isinstance(neighbours[1].get_data(), RoadSegment):
-                        print("point", road_point, "neighbours", neighbours)
                         graph.delete_point(road_point)
-                        graph.add_connection(neighbours[0], neighbours[1], 0)
+                        graph.add_connection(neighbours[0], neighbours[1], 0, "")
                 pass
             else:
                 continue
@@ -109,7 +110,7 @@ class GraphLoader:
                 point = graph.get_points()[index_point_actual]
             # Case 1: Position of point is not in the graph.
             if point_to_be_added.get_data().get_pos() not in positions:
-                graph.add_point(point_to_be_added, point, 0)
+                graph.add_point(point_to_be_added, point, 0, "")
             else:
                 # Case 2: Position of Point is in the Graph, but connection does not exist
                 index_actual = positions.index(point_to_be_added.get_data().get_pos())
@@ -118,7 +119,7 @@ class GraphLoader:
                 neighbours = [vertex.get_end_point() for vertex in point.get_neighbours()]
 
                 if point_to_be_added_actual not in neighbours:
-                    graph.add_connection(point_to_be_added_actual, point, 0)
+                    graph.add_connection(point_to_be_added_actual, point, 0, "")
         return graph
 
     def load_point(self, point_str: 'str', graph: 'Graph'):
@@ -151,6 +152,7 @@ class GraphLoader:
             start = vertex.get_start_point().get_data().get_name()
             end = vertex.get_end_point().get_data().get_name()
             cost = str(vertex.get_cost())
+            extra = vertex.get_extra()
 
             # Get index of point in graph_arr
             index = graph.get_points().index(graph.get_point_by_name(start))
@@ -158,8 +160,8 @@ class GraphLoader:
 
             # If already some neighbours are already specified the seperator must be added!
             if neighbour_string != "":
-                neighbour_string += "|"
-            neighbour_string += end + "," + cost
+                neighbour_string += "/"
+            neighbour_string += ",".join([end,cost,extra])
 
             new_point_str = graph_arr[index].split(';')
             new_point_str[3] = neighbour_string
