@@ -35,6 +35,9 @@ class RoadSegment(PlaceInterface):
     def get_pos(self):
         return self.pos
 
+    def set_pos(self, pos):
+        self.pos = pos
+
     #def get_extra(self):
     #    return self.extra
 

@@ -30,7 +30,6 @@ class NationalParkScrapper:
     def get_park_by_code(self, code):
         endpoint = "?".join([self.base_endcode, f"parkCode={code}"])
         data = self.__make_call(endpoint)
-        print(data["data"])
         data_str = self.__create_string_from_nps_data(data["data"])[0]
         return data_str
 

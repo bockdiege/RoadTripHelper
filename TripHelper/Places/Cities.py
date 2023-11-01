@@ -22,6 +22,9 @@ class City(PlaceInterface):
     def get_extra(self):
         return self.extra
 
+    def set_pos(self, pos):
+        self.pos = pos
+
     def get_point_without_neighbours_as_string(self):
         new_point_str = self.point_without_neighbours_as_string.split(';')
         new_point_str[3] = ""

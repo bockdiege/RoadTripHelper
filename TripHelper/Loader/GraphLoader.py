@@ -4,6 +4,8 @@ It should be responsible for properly loading and saving data.
 It also should be able to mine data with different apis
 
 """
+from polyline import polyline
+
 from TripHelper.Loader.TypeManager import TypeManager
 from TripHelper.Graph.Node import Point
 from TripHelper.Graph.Graph import Graph
@@ -74,9 +76,9 @@ class GraphLoader:
         # Points that should be compressed:
         # Roads that only neighbour two other roads
 
-        roads_in_graph = self.get_points_by_type(graph, ["Road"])
+        roads_in_graph = self.get_points_by_type(graph, ["Road"], False)
 
-        #print([len(point.get_neighbours()) for point in roads_in_graph])
+        # print([len(point.get_neighbours()) for point in roads_in_graph])
         for road_point in roads_in_graph:
             # Filter out those road points that only have two neigbours that are roads
             neighbours = [vertex.get_end_point() for vertex in road_point.get_neighbours()]
@@ -161,7 +163,7 @@ class GraphLoader:
             # If already some neighbours are already specified the seperator must be added!
             if neighbour_string != "":
                 neighbour_string += "/"
-            neighbour_string += ",".join([end,cost,extra])
+            neighbour_string += ",".join([end, cost, extra])
 
             new_point_str = graph_arr[index].split(';')
             new_point_str[3] = neighbour_string
@@ -172,14 +174,30 @@ class GraphLoader:
             file.write("\n".join(graph_arr))
         return path
 
-    def get_points_by_type(self, graph, point_type_arr: list[str]) -> list[Point]:
+    def get_points_by_type(self, graph, point_type_arr: list[str], complement: 'bool') -> list[Point]:
         """
-
         :param graph:
         :param point_type_arr: List of types that should be filtered
         :param complement: If true points named in type array will be returned,
                 if false then those that are not of the type will be returned
         :return: array of points
         """
-        arr = [point for point in graph.get_points() for point_type in point_type_arr if point_type == self.typeManager.type_to_string(point.get_data())]
+        # I am sure this code could be formatted better...
+        if complement:
+            arr = [point for point in graph.get_points() if
+                   self.typeManager.type_to_string(point.get_data()) not in point_type_arr]
+        else:
+            arr = [point for point in graph.get_points() if
+                   self.typeManager.type_to_string(point.get_data()) in point_type_arr]
         return arr
+
+    def get_polyline(self, points: 'list[Point]'):
+        geom = []
+        for index, point in enumerate(points[:-1]):
+            for vertex in point.get_neighbours():
+                if vertex.get_end_point() == points[index + 1]:
+                    extra = vertex.get_extra()
+                    geometry_decoded = polyline.decode(extra)
+                    geom += geometry_decoded
+        line = polyline.encode(geom)
+        return line

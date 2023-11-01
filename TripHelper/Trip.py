@@ -52,15 +52,7 @@ class Trip:
         # TODO: for that a method that returns only points of a certain type.
         roads = self.scrapper.osrm.get_roads_from_points(self.graph.get_points())
 
-        # This connects the actual points to the Road Points
-        n = len(self.graph.get_points())
-        indexes = [int(n*i - i*(i+1)/2) for i, p in enumerate(self.graph.get_points())]
-
-        self.graph.add_point(roads[-1][-1], self.graph.get_points()[-1], 0, "")     # this connects the last road
-        # This connects the other points.
-        for index, point in enumerate(self.graph.get_points()[:-2]):
-            road = roads[indexes[index]]
-            self.graph.add_point(road[0], point, 0, "")
+        self.connect_points_to_roads(roads)
 
         for road in roads:
             self.loader.add_road(road, self.graph)
@@ -68,10 +60,32 @@ class Trip:
         self.finalize_road_network()
         return self.graph
 
+    def connect_points_to_roads(self, roads):
+        positions = [data.get_pos() for data in self.graph.get_points_data()]
+
+        # This connects the actual points to the Road Points
+        n = len(self.graph.get_points())
+        indexes = [int(n * i - i * (i + 1) / 2) for i, p in enumerate(self.graph.get_points())]
+
+        if roads[-1][-1].get_data().get_pos() in positions:
+            roads[-1][-1] = self.graph.get_points()[-1]
+        else:
+            self.graph.add_point(roads[-1][-1], self.graph.get_points()[-1], 0, "")  # this connects the last road
+        # This connects the other points.
+        for index, point in enumerate(self.graph.get_points()[:-2]):
+            road = roads[indexes[index]]
+
+            if road[0].get_data().get_pos() in positions:
+                road[0] = point
+            else:
+                self.graph.add_point(road[0], point, 0, "")
+        return
+
     def finalize_road_network(self):
         """
         Get the actual driving distance between the road points, as well as the polylines that show the
         """
+        print(f"Number of requests: {len(self.graph.get_vertexes())}")
         for vertex in self.graph.get_vertexes():
             geo, cost = self.scrapper.osrm.get_dir_and_cost_between_two_points(
                 vertex.get_end_point().get_data().get_pos(),

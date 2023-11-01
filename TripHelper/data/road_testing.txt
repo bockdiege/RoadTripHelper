@@ -1,4 +1,4 @@
+Napa;38.2975,-122.2869;City;;Far
 San Francisco;37.7749,-122.4194;City;;Beautiful
 Sacramento;38.5816,-121.4944;City;;Ugly,Shitty
 Tahoe City;39.0968,-120.0324;City;;Beautiful
-Napa;38.2975,-122.2869;City;;Far
