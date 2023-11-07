@@ -2,7 +2,7 @@
 #that causes a circular input
 
 
-class Vertex:
+class Edge:
     def __init__(self, point1: 'Point', point2: 'Point', cost, extra: 'str'):
         self.cost = cost
         self.point1 = point1

@@ -54,6 +54,7 @@ class OSRMScrapper:
                 requests.append((points[i].get_data().get_pos(), points[j].get_data().get_pos()))
 
         print("requests:", len(requests))
+        len_requests = len(requests)
         print("predicted amount of requests: ", (len(points)**2 - len(points))/2)
         # Execute the requests
         roads = []
@@ -61,6 +62,7 @@ class OSRMScrapper:
             pos0 = request[0]
             pos1 = request[1]
             road_path = self.get_direction_between_two_points(pos0, pos1)
+            print(f"{i} out of {len_requests}, {round(i/len_requests * 100)}%")
             arr = []
             for j, position in enumerate(road_path):
                 road_segment = RoadSegment(f"{i}-{j};{position};Road;;")

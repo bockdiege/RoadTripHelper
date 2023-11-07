@@ -33,7 +33,7 @@ class GraphLoader:
 
             # Connect all the points to each other
             for point in list_of_points_in_file:
-                self.__generate_vertexes_from_str(point, graph)
+                self.__generate_edges_from_str(point, graph)
         return graph
 
     def __generate_point_from_str(self, point_str: 'str') -> 'Point':
@@ -52,7 +52,7 @@ class GraphLoader:
         new_point = Point(new_place)
         return new_point
 
-    def __generate_vertexes_from_str(self, point_str: 'str', graph: 'Graph'):
+    def __generate_edges_from_str(self, point_str: 'str', graph: 'Graph'):
         """
         Takes a point string and a graph. Figures out what the neighbours of the point are and then
         actually creates such connections in the Graph
@@ -81,7 +81,7 @@ class GraphLoader:
         # print([len(point.get_neighbours()) for point in roads_in_graph])
         for road_point in roads_in_graph:
             # Filter out those road points that only have two neigbours that are roads
-            neighbours = [vertex.get_end_point() for vertex in road_point.get_neighbours()]
+            neighbours = [edge.get_end_point() for edge in road_point.get_neighbours()]
             if len(neighbours) == 2:
                 if isinstance(neighbours[0].get_data(), RoadSegment):
                     if isinstance(neighbours[1].get_data(), RoadSegment):
@@ -118,7 +118,7 @@ class GraphLoader:
                 index_actual = positions.index(point_to_be_added.get_data().get_pos())
                 point_to_be_added_actual = graph.get_points()[index_actual]
 
-                neighbours = [vertex.get_end_point() for vertex in point.get_neighbours()]
+                neighbours = [edge.get_end_point() for edge in point.get_neighbours()]
 
                 if point_to_be_added_actual not in neighbours:
                     graph.add_connection(point_to_be_added_actual, point, 0, "")
@@ -135,7 +135,7 @@ class GraphLoader:
         """
         new_point = self.__generate_point_from_str(point_str)
         graph.add_single_point(new_point)
-        self.__generate_vertexes_from_str(point_str, graph)
+        self.__generate_edges_from_str(point_str, graph)
         return graph
 
     def dump_graph(self, graph, path):
@@ -150,11 +150,11 @@ class GraphLoader:
             graph_arr[point_index] = point_string
 
         # Specify the neighbours:
-        for vertex in graph.get_single_vertexes():
-            start = vertex.get_start_point().get_data().get_name()
-            end = vertex.get_end_point().get_data().get_name()
-            cost = str(vertex.get_cost())
-            extra = vertex.get_extra()
+        for edge in graph.get_single_edges():
+            start = edge.get_start_point().get_data().get_name()
+            end = edge.get_end_point().get_data().get_name()
+            cost = str(edge.get_cost())
+            extra = edge.get_extra()
 
             # Get index of point in graph_arr
             index = graph.get_points().index(graph.get_point_by_name(start))
@@ -192,12 +192,15 @@ class GraphLoader:
         return arr
 
     def get_polyline(self, points: 'list[Point]'):
+        points = points[::-1]
         geom = []
         for index, point in enumerate(points[:-1]):
-            for vertex in point.get_neighbours():
-                if vertex.get_end_point() == points[index + 1]:
-                    extra = vertex.get_extra()
+            for edge in point.get_neighbours():
+                if edge.get_end_point() == points[index + 1]:
+                    extra = edge.get_extra()
                     geometry_decoded = polyline.decode(extra)
+                    #print("old geometry", geom)
+                    #print("what will be added:", geometry_decoded)
                     geom += geometry_decoded
         line = polyline.encode(geom)
         return line

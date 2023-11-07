@@ -9,7 +9,7 @@ In the future it should also have these things:
 - GUI Manager
 """
 import logging
-
+import math
 from TripHelper.Graph.Graph import Graph
 from TripHelper.Graph.Node import Point
 from TripHelper.Loader.GraphLoader import GraphLoader
@@ -38,9 +38,14 @@ class Trip:
             self.loader.load_point(np, self.graph)
         return
 
-    def search_path_between_two_points(self, start: 'str', end: 'str'):
+    def search_path_between_two_points(self, start: 'str', end: 'str')-> tuple[list, float]:
         try:
-            return self.graph.search(self.graph.get_point_by_name(start), self.graph.get_point_by_name(end))
+            path, cost_in_seconds = self.graph.search(self.graph.get_point_by_name(start), self.graph.get_point_by_name(end))
+            cost_in_seconds = math.floor(cost_in_seconds)
+            cost_in_minutes = math.floor(cost_in_seconds / 60)
+            cost_in_hours = math.floor(cost_in_minutes / 60)
+            actual_cost = [cost_in_hours, cost_in_minutes % 60, cost_in_seconds % 60]
+            return path, actual_cost
         except KeyError:
             logging.critical(f"No connection between {start} and {end} found")
 
@@ -56,6 +61,7 @@ class Trip:
 
         for road in roads:
             self.loader.add_road(road, self.graph)
+
         self.loader.compress_roads(self.graph)
         self.finalize_road_network()
         return self.graph
@@ -85,13 +91,13 @@ class Trip:
         """
         Get the actual driving distance between the road points, as well as the polylines that show the
         """
-        print(f"Number of requests: {len(self.graph.get_vertexes())}")
-        for vertex in self.graph.get_vertexes():
+        print(f"Number of requests: {len(self.graph.get_edges())}")
+        for edge in self.graph.get_edges():
             geo, cost = self.scrapper.osrm.get_dir_and_cost_between_two_points(
-                vertex.get_end_point().get_data().get_pos(),
-                vertex.get_start_point().get_data().get_pos())
-            vertex.set_cost(cost)
-            vertex.set_extra(geo)
+                edge.get_end_point().get_data().get_pos(),
+                edge.get_start_point().get_data().get_pos())
+            edge.set_cost(cost)
+            edge.set_extra(geo)
             pass
         pass
 
