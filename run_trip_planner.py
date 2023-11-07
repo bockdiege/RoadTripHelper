@@ -38,7 +38,7 @@ rainbow_bridge = trip.graph.get_point_by_name("Rainbow Bridge")
 salt = trip.graph.get_point_by_name("Salt Lake City")
 road = trip.graph.get_point_by_name("152-24")
 
-path, cost = trip.graph.get_shortest_path_between_points(zion, road, [])
+path, cost = trip.graph.get_shortest_path_between_points(zion, salt, [bryce])
 
 plotter = Plotter()
 
